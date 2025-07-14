@@ -31,9 +31,12 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/assets/sb-admin/css/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+               "src/assets/sb-admin/js/scripts.js"
+            ]
           },
           "configurations": {
             "production": {
