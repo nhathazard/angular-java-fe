@@ -1,31 +1,95 @@
 <div class="container mt-4">
-    <h4>User Table</h4>
-    <div class="table-responsive">
-      <table class="table table-striped table-bordered table-hover align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th>#</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Nguyễn Văn A</td>
-            <td>nva@example.com</td>
-            <td>Admin</td>
-            <td><span class="badge bg-success">Active</span></td>
-            <td>
-              <button class="btn btn-sm btn-primary me-1">Add<i class="fas fa-edit"></i></button>
-              <button class="btn btn-sm btn-danger">Delete<i class="fas fa-trash"></i></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="container mt-4">
+        <h4>User Management</h4>
+      
+        <!-- Create Button -->
+        <button class="btn btn-success mb-3" (click)="showCreateForm = !showCreateForm">
+          <i class="fas fa-plus"></i> Create User
+        </button>
+      
+        <!-- Form Tạo Mới -->
+        <form *ngIf="showCreateForm" [formGroup]="userForm" (ngSubmit)="onSubmit()" class="border p-3 rounded bg-light">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label>Email</label>
+              <input class="form-control" formControlName="email" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Password</label>
+              <input type="password" class="form-control" formControlName="password" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Full Name</label>
+              <input class="form-control" formControlName="fullName" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Address</label>
+              <input class="form-control" formControlName="address" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Phone</label>
+              <input class="form-control" formControlName="phone" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3">
+                    <label>Avatar</label>
+                    <input type="file" class="form-control" (change)="onAvatarSelected($event)" />
+                    <div class="mt-2 position-relative" *ngIf="avatarPreview">
+                        <img [src]="avatarPreview" class="img-thumbnail" width="150" height="150" />
+                        
+                        <!-- Nút xoá ảnh -->
+                        <button type="button"
+                                (click)="removeAvatar()"
+                                class="btn btn-sm btn-danger position-absolute top-0 end-0 translate-middle rounded-circle"
+                                style="z-index: 10;">
+                          ✕
+                        </button>
+                      </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Role</label>
+              <select class="form-select" formControlName="roleId">
+                <option [value]="role.id" *ngFor="let role of roles">{{ role }}</option>
+              </select>
+            </div>
+          </div>
+      
+          <button class="btn btn-primary" type="submit" [disabled]="userForm.invalid">
+            Submit
+          </button>
+        </form>
+      </div>
+    
+    <div *ngIf="!showCreateForm">
+        <h4>User Table</h4>
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>#</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Nguyễn Văn A</td>
+                <td>nva@example.com</td>
+                <td>Admin</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                  <button class="btn btn-sm btn-primary me-1">Add<i class="fas fa-edit"></i></button>
+                  <button class="btn btn-sm btn-danger">Delete<i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
     </div>
   </div>
   
