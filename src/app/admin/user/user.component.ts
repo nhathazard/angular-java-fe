@@ -1,18 +1,22 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
   showCreateForm = false;
   userForm!: FormGroup;
-  roles: any[] = ['ADMIN', "USER"];
+  roles: any[] = [
+    { id: 1, name: 'ADMIN' },
+    { id: 2, name: 'USER' },
+  ];
   avatarFile: File | undefined;
   avatarPreview: string | ArrayBuffer | null = null;
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.userForm = this.fb.group({
@@ -22,7 +26,7 @@ export class UserComponent implements OnInit {
       address: [''],
       phone: [''],
       avatar: [''],
-      roleId: [null, Validators.required]
+      role: [null, Validators.required],
     });
   }
 
@@ -30,11 +34,23 @@ export class UserComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.avatarFile = file;
+      console.log('file', file);
+      const formData = new FormData();
+      formData.append('file', file);
+      this.http
+        .post('http://localhost:8080/admin/user/upload', formData, {
+          responseType: 'text',
+        })
+        .subscribe((value) => {
+          console.log('nhat', value);
+
+          this.userForm.patchValue({ avatar: value });
+        });
       const reader = new FileReader();
-      reader.onload= () => {
+      reader.onload = () => {
         this.avatarPreview = reader.result;
       };
-      reader.readAsDataURL(file)
+      reader.readAsDataURL(file);
     }
   }
 
@@ -43,24 +59,12 @@ export class UserComponent implements OnInit {
     this.avatarPreview = null;
   }
   onSubmit() {
-    console.log('userForm',this.userForm);
-    
-    if (this.userForm.valid) {
-      console.log('submit success');
-      const formData = new FormData();
-      formData.append('email', this.userForm.value.email);
-      formData.append('password', this.userForm.value.password);
-      formData.append('fullName', this.userForm.value.fullName);
-      formData.append('address', this.userForm.value.address);
-      formData.append('phone', this.userForm.value.phone);
-      formData.append('roleId', this.userForm.value.roleId);
-      if (this.avatarFile) {
-        formData.append('avatar', this.avatarFile);
-      }
-
-      console.log('formData',formData);
-      
-    }
+    const body = this.userForm.value;
+    console.log('body', body);
+    this.http
+      .post('http://localhost:8080/admin/user/create', body)
+      .subscribe((value) => {
+        console.log('value', value);
+      });
   }
-
 }
